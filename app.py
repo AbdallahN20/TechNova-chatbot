@@ -104,7 +104,7 @@ def home():
     return render_template("index.html")
 
 # 🔥 المسار الجديد للأيقونة (Favicon) 🔥
-@app.route('/telegram.ico')
+@app.route('/technova.ico')
 def favicon():
     # بنحدد المسار اللي فيه الصور (static/images) ونبعت ملف favicon.png
     return send_from_directory(os.path.join(app.root_path, 'static/images'),
