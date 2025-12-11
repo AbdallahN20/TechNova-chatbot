@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 from flask import Flask, render_template, request, jsonify
@@ -18,10 +19,17 @@ MY_WEBSITE_URL = "https://lime4k.pythonanywhere.com"  # رابط موقعك
 user_context = {}
 
 
-def load_knowledge_base():
-    with open('knowledge.json', 'r', encoding='utf-8') as file:
-        return json.load(file)
 
+def load_knowledge_base():
+    # 1. بنجيب مسار المجلد اللي فيه ملف app.py الحالي
+    base_path = os.path.dirname(os.path.abspath(__file__))
+
+    # 2. بنلزق فيه اسم ملف الجيسون عشان يبقى مسار كامل
+    file_path = os.path.join(base_path, 'knowledge.json')
+
+    # 3. بنفتح الملف بالمسار الكامل
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return json.load(file)
 
 knowledge_base = load_knowledge_base()
 
