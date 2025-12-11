@@ -1,11 +1,20 @@
 import json
+import requests
 from flask import Flask, render_template, request, jsonify
 from difflib import get_close_matches
 
 app = Flask(__name__)
 
-# متغير عالمي لحفظ سياق الحديث (الذاكرة)
-# في المشاريع الكبيرة بنستخدم Database أو Session، بس هنا ده كافي جداً
+# ===========================
+# إعدادات تيليجرام
+# ===========================
+TELEGRAM_TOKEN = "8526008564:AAH9kAQIzk53HPDTLxosuO2pcA-n2Ihzs_o"
+TELEGRAM_API_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
+MY_WEBSITE_URL = "https://lime4k.pythonanywhere.com"  # رابط موقعك
+
+# ===========================
+# المنطق (Logic) والذاكرة
+# ===========================
 user_context = {}
 
 
@@ -17,17 +26,21 @@ def load_knowledge_base():
 knowledge_base = load_knowledge_base()
 
 
-def get_bot_response(user_input):
+def get_bot_response(user_input, user_id="web"):
     global user_context
     user_input = user_input.lower()
 
-    # 1. تحديث الذاكرة (Context)
+    # استخدام user_id عشان نفصل ذاكرة كل مستخدم عن التاني (مهم للتيليجرام)
+    if user_id not in user_context:
+        user_context[user_id] = {}
+
+    # 1. تحديث الذاكرة
     if "موبايل" in user_input or "تطبيق" in user_input:
-        user_context['topic'] = 'mobile'
+        user_context[user_id]['topic'] = 'mobile'
     elif "ويب" in user_input or "موقع" in user_input:
-        user_context['topic'] = 'web'
+        user_context[user_id]['topic'] = 'web'
     elif "تصميم" in user_input or "ui" in user_input:
-        user_context['topic'] = 'ui'
+        user_context[user_id]['topic'] = 'ui'
 
     # 2. البحث عن الكلمات المفتاحية
     all_patterns = []
@@ -44,37 +57,26 @@ def get_bot_response(user_input):
                 found_intent = intent
                 break
 
-    # ========================================================
-    # 3. الذكاء السياقي (Context Intelligence) - التعديل هنا
-    # ========================================================
+    # 3. الذكاء السياقي
+    current_topic = user_context[user_id].get('topic')
 
-    current_topic = user_context.get('topic')
-
-    # A. معالجة سؤال "الصور/النماذج" بناءً على السياق
+    # A. معالجة الصور
     if found_intent and found_intent["tag"] == "general_work":
         if current_topic == 'mobile':
-            return {"text": "بما إننا بنتكلم عن الموبايل، دي نماذج شغلنا:", "image": "/static/images/mobile.png"}
+            return {"text": "نماذج الموبايل:", "image": "/static/images/mobile.png"}
         elif current_topic == 'web':
-            return {"text": "دي أحدث المواقع اللي صممناها:", "image": "/static/images/web.png"}
+            return {"text": "نماذج الويب:", "image": "/static/images/web.png"}
         elif current_topic == 'ui':
-            return {"text": "دي تصميمات الـ UI/UX:", "image": "/static/images/ui.png"}
+            return {"text": "تصميمات UI:", "image": "/static/images/ui.png"}
 
-    # B. معالجة سؤال "الأسعار" بناءً على السياق (الجديد 🔥)
+    # B. معالجة الأسعار
     if found_intent and found_intent["tag"] == "general_price":
         if current_topic == 'mobile':
-            # نجيب نص السعر من قسم mobile_prices
-            mobile_intent = next((i for i in knowledge_base["intents"] if i["tag"] == "mobile_prices"), None)
-            return {"text": mobile_intent["responses"][0], "image": None}
-
+            intent = next((i for i in knowledge_base["intents"] if i["tag"] == "mobile_prices"), None)
+            return {"text": intent["responses"][0], "image": None}
         elif current_topic == 'web':
-            # نجيب نص السعر من قسم web_prices
-            web_intent = next((i for i in knowledge_base["intents"] if i["tag"] == "web_prices"), None)
-            return {"text": web_intent["responses"][0], "image": None}
-
-        elif current_topic == 'ui':
-            # نجيب نص السعر من قسم ui_prices
-            ui_intent = next((i for i in knowledge_base["intents"] if i["tag"] == "ui_prices"), None)
-            return {"text": ui_intent["responses"][0], "image": None}
+            intent = next((i for i in knowledge_base["intents"] if i["tag"] == "web_prices"), None)
+            return {"text": intent["responses"][0], "image": None}
 
     # 4. الرد الطبيعي
     if found_intent:
@@ -83,10 +85,14 @@ def get_bot_response(user_input):
 
     else:
         return {
-            "text": "عذراً، لم أفهم بدقة. 🤔\nممكن توضح؟ (مثلاً: 'أسعار الموبايل'، 'نماذج الويب').",
+            "text": "عذراً، لم أفهم. 🤔 ممكن توضح؟",
             "image": None
         }
 
+
+# ===========================
+# مسارات الموقع (Routes)
+# ===========================
 
 @app.route("/")
 def home():
@@ -97,6 +103,37 @@ def home():
 def chat():
     msg = request.form["msg"]
     return jsonify(get_bot_response(msg))
+
+
+# ===========================
+# بوابة تيليجرام (الجديدة) 🚀
+# ===========================
+@app.route('/telegram', methods=['POST'])
+def telegram_webhook():
+    update = request.get_json()
+
+    if "message" in update:
+        chat_id = update["message"]["chat"]["id"]
+
+        # التأكد إن الرسالة نصية
+        if "text" in update["message"]:
+            text = update["message"]["text"]
+
+            # 1. هات الرد من البوت بتاعنا
+            response = get_bot_response(text, str(chat_id))
+            reply_text = response['text']
+            reply_image = response['image']
+
+            # 2. ابعت النص لتيليجرام
+            requests.get(TELEGRAM_API_URL + f"sendMessage?chat_id={chat_id}&text={reply_text}")
+
+            # 3. لو فيه صورة، ابعتها
+            if reply_image:
+                # لازم نحول المسار المحلي لرابط كامل عشان تيليجرام يشوفه
+                full_image_url = MY_WEBSITE_URL + reply_image
+                requests.get(TELEGRAM_API_URL + f"sendPhoto?chat_id={chat_id}&photo={full_image_url}")
+
+    return "OK"
 
 
 if __name__ == "__main__":
