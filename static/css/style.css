@@ -44,6 +44,7 @@ body { font-family: 'Cairo', sans-serif; background-color: #0f0c29; color: white
     display: flex; justify-content: space-between; align-items: center;
     padding: 15px 50px; position: fixed; top: 20px; left: 50%;
     transform: translateX(-50%); width: 90%; z-index: 1000;
+    transition: 0.3s ease; /* إضافة نعومة عند تغيير الحجم */
 }
 .logo { font-size: 24px; font-weight: bold; color: #fff; text-shadow: 0 0 10px #a29bfe; }
 .nav-links { list-style: none; display: flex; gap: 20px; }
@@ -119,3 +120,78 @@ body { font-family: 'Cairo', sans-serif; background-color: #0f0c29; color: white
 .chat-footer { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; }
 .chat-footer input { flex: 1; padding: 10px; border-radius: 20px; border: none; outline: none; margin-left: 10px; background: rgba(255,255,255,0.1); color: white; }
 .chat-footer button { background: none; border: none; color: #00d2d3; font-size: 20px; cursor: pointer; }
+
+/* =========================================
+   5. Mobile Responsive Fixes (تعديلات الموبايل)
+   ========================================= */
+@media screen and (max-width: 768px) {
+
+    /* إصلاح الناف بار: العناصر تحت بعض بدل ما تكون متكدسة */
+    .glass-nav {
+        flex-direction: column;
+        padding: 15px;
+        width: 95%; /* توسيع الناف بار */
+        top: 10px;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+
+    /* ترتيب اللينكات بشكل منظم */
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 0;
+    }
+
+    .nav-links li {
+        margin: 0;
+    }
+
+    .nav-links a {
+        font-size: 14px;
+        padding: 8px 12px;
+        background: rgba(255,255,255,0.1); /* زرار خفيف */
+        border-radius: 8px;
+        display: block;
+    }
+
+    /* تصغير الخطوط الكبيرة في الشاشة الرئيسية */
+    .hero-content h1 {
+        font-size: 28px;
+        line-height: 1.4;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+        padding: 0 10px;
+    }
+
+    /* إجبار الكروت تكون كارت واحد في الصف */
+    .cards-container {
+        grid-template-columns: 1fr;
+        padding: 0 10px;
+    }
+
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* تقليل الهوامش */
+    .section-padding {
+        padding: 60px 5%;
+    }
+
+    /* تعديل مكان وحجم الشات بوت */
+    .chat-wrapper {
+        width: 92%;
+        height: 60vh;
+        right: 4%;
+        bottom: 85px;
+    }
+}
