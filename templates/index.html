@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechNova | حلول برمجية للمستقبل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="logo">TechNova 🚀</div>
+        <ul class="nav-links">
+            <li><a href="#home">الرئيسية</a></li>
+            <li><a href="#services">خدماتنا</a></li>
+            <li><a href="#portfolio">أعمالنا</a></li>
+            <li><a href="#contact">تواصل معنا</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="hero-section">
+        <div class="hero-content glass-card">
+            <h1>نحول أفكارك لواقع رقمي</h1>
+            <p>شركة رائدة في تطبيقات الموبايل، الويب، والذكاء الاصطناعي. نبني لك المستقبل بأحدث التقنيات.</p>
+            <button class="cta-btn" onclick="document.getElementById('services').scrollIntoView()">استكشف خدماتنا</button>
+        </div>
+    </section>
+
+    <section id="services" class="section-padding">
+        <h2 class="section-title">خدماتنا المميزة</h2>
+        <div class="cards-container">
+            <div class="service-card glass-card">
+                <i class="fas fa-mobile-alt icon"></i>
+                <h3>تطبيقات الموبايل</h3>
+                <p>تطبيقات Android & iOS باستخدام Flutter و Native بأداء عالي.</p>
+                <span class="price">تبدأ من 15,000 ج.م</span>
+            </div>
+            <div class="service-card glass-card">
+                <i class="fas fa-laptop-code icon"></i>
+                <h3>تطوير الويب</h3>
+                <p>متاجر إلكترونية ومواقع تعريفية بلوحات تحكم ذكية.</p>
+                <span class="price">تبدأ من 5,000 ج.م</span>
+            </div>
+            <div class="service-card glass-card">
+                <i class="fas fa-paint-brush icon"></i>
+                <h3>تصميم UI/UX</h3>
+                <p>تحليل تجربة المستخدم وتصميم واجهات عصرية ببرنامج Figma.</p>
+                <span class="price">تبدأ من 300 ج.م للشاشة</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="section-padding">
+        <h2 class="section-title">سابقة الأعمال</h2>
+        <div class="portfolio-grid">
+            <div class="portfolio-item glass-card">
+                <img src="/static/images/mobile.png" alt="تطبيق موبايل">
+                <div class="overlay">تطبيقات التوصيل</div>
+            </div>
+            <div class="portfolio-item glass-card">
+                <img src="/static/images/web.png" alt="موقع ويب">
+                <div class="overlay">مواقع عقارات</div>
+            </div>
+            <div class="portfolio-item glass-card">
+                <img src="/static/images/ui.png" alt="تصميم UI">
+                <div class="overlay">تصميمات فيجما</div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="glass-footer">
+        <p>جميع الحقوق محفوظة © 2024 لشركة TechNova للبرمجيات</p>
+        <div class="socials">
+            <i class="fab fa-facebook"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-linkedin"></i>
+        </div>
+    </footer>
+
+    <button id="chatToggle" class="chat-toggle-btn">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <div class="chat-wrapper" id="chatWrapper">
+        <div class="chat-header">
+            <span>🤖 المساعد الذكي</span>
+            <span class="close-chat" onclick="toggleChat()">✖</span>
+        </div>
+
+        <div class="chat-body" id="chatLogs">
+            <div class="message-row bot-row">
+                <div class="message bot-msg">أهلاً بك! 👋 <br> أنا هنا لمساعدتك في معرفة الأسعار والخدمات.</div>
+            </div>
+        </div>
+
+        <div class="chat-footer">
+            <input type="text" id="userInput" placeholder="اكتب رسالتك...">
+            <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
