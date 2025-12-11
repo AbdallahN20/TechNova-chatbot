@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from difflib import get_close_matches
 
 app = Flask(__name__)
@@ -18,8 +18,6 @@ MY_WEBSITE_URL = "https://lime4k.pythonanywhere.com"  # رابط موقعك
 # ===========================
 user_context = {}
 
-
-
 def load_knowledge_base():
     # 1. بنجيب مسار المجلد اللي فيه ملف app.py الحالي
     base_path = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +30,6 @@ def load_knowledge_base():
         return json.load(file)
 
 knowledge_base = load_knowledge_base()
-
 
 def get_bot_response(user_input, user_id="web"):
     global user_context
@@ -106,6 +103,12 @@ def get_bot_response(user_input, user_id="web"):
 def home():
     return render_template("index.html")
 
+# 🔥 المسار الجديد للأيقونة (Favicon) 🔥
+@app.route('/telegram.ico')
+def favicon():
+    # بنحدد المسار اللي فيه الصور (static/images) ونبعت ملف favicon.png
+    return send_from_directory(os.path.join(app.root_path, 'static/images'),
+                               'favicon.png', mimetype='image/vnd.microsoft.icon')
 
 @app.route("/get_response", methods=["POST"])
 def chat():
